@@ -71,7 +71,10 @@ form.add .full{grid-column:1/-1}
 .live a{border:1px solid var(--line);border-radius:999px;padding:3px 10px;text-decoration:none;white-space:nowrap}
 .live a:hover{border-color:var(--info)}
 .new{background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;vertical-align:1px}
-.updated{color:var(--muted);font-size:12px;margin:-4px 0 10px}
+.updbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:-4px 0 12px}
+.updated{color:var(--muted);font-size:12px}
+.btn.run{text-decoration:none;font-size:13px;border-color:var(--accent);color:var(--accent)}
+.btn.run:hover{background:var(--accent);color:#fff}
 .chk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
 .s-aberta{background:var(--ok-soft);color:var(--ok)}
 .s-fechada{background:var(--gray-soft);color:var(--muted)}
@@ -109,7 +112,7 @@ th{position:static}
   </nav>
 
   <section id="tab-vagas">
-    <div class="updated" id="updated"></div>
+    <div class="updbar"><span class="updated" id="updated"></span><a class="btn run" href="https://claude.ai/code/routines/trig_01LR16enugG48y5uXFTSN1ea" target="_blank" rel="noopener" title="Abre a rotina no Claude (precisa estar logada). Clique em “Run now”; em ~15 min a lista é atualizada aqui.">🔄 Verificar vagas agora</a></div>
     <div class="kpis" id="jkpis"></div>
     <div class="live" id="liveLinks"></div>
     <div class="bar">
