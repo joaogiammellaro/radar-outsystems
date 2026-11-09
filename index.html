@@ -24,9 +24,14 @@ main{max-width:1300px;margin:0 auto;padding:0 16px 40px}
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:12px 0 16px;flex-wrap:wrap}
 .tab{background:none;border:0;padding:10px 14px;cursor:pointer;color:var(--muted);font:inherit;border-bottom:2px solid transparent}
 .tab.on{color:var(--text);border-color:var(--accent);font-weight:600}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
-.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
-.kpi b{display:block;font-size:24px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.kpi .ic{flex:none;width:40px;height:40px;border-radius:10px;display:grid;place-items:center}
+.tone-accent{background:var(--accent-soft);color:var(--accent)}
+.tone-info{background:var(--info-soft);color:var(--info)}
+.tone-ok{background:var(--ok-soft);color:var(--ok)}
+.tone-warn{background:var(--warn-soft);color:var(--warn)}
+.kpi b{display:block;font-size:24px;line-height:1.1}
 .kpi small{color:var(--muted)}
 .bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
 input,select,textarea{font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 9px}
@@ -226,7 +231,7 @@ function render(){
   document.getElementById("kpis").innerHTML=[
     ["Empresas mapeadas",list.length],["Parceiros oficiais",list.filter(c=>c.type==="parceiro").length],
     ["Com página de carreiras",list.filter(c=>c.careersUrl).length],["Aceitam CV espontâneo",list.filter(c=>c.spontaneousCv==="sim").length],["CV cadastrado",n("CV cadastrado")+n("Contato com RH")],["Falta cadastrar",list.filter(c=>!STATUSES.includes(c.status)||c.status==="CV não cadastrado").length]
-  ].map(([l,v])=>`<div class="kpi"><b>${v}</b><small>${l}</small></div>`).join("");
+  ].map(kpiCard).join("");
 }
 /* ---------- VAGAS ---------- */
 const APP_STATUSES=["Não candidatei","Candidatei","Em processo","Entrevista","Proposta","Sem retorno","Recusada","Não tenho interesse"];
@@ -235,6 +240,36 @@ const SIT_LABEL={aberta:"Aberta",fechada:"Fechada",desconhecido:"Verificar"};
 state.jobEdits=state.jobEdits||{}; state.jobsAdded=state.jobsAdded||[]; state.jobsRemoved=state.jobsRemoved||[];
 let jSortKey="posted",jSortDir=-1;
 const LAST_VISIT=(()=>{try{const v=localStorage.getItem(KEY+"-lastVisit");localStorage.setItem(KEY+"-lastVisit",new Date().toISOString().slice(0,10));return v||""}catch(e){return""}})();
+// Hora exata da última sincronização: data do último commit que alterou data-jobs.js (API pública do GitHub).
+let LAST_SYNC="";
+fetch("https://api.github.com/repos/joaogiammellaro/radar-outsystems/commits?path=data-jobs.js&per_page=1")
+  .then(r=>r.ok?r.json():null).then(c=>{const iso=c&&c[0]&&c[0].commit.committer.date;if(!iso)return;
+    const d=new Date(iso),p=n=>String(n).padStart(2,"0");
+    LAST_SYNC=p(d.getDate())+"-"+p(d.getMonth()+1)+"-"+d.getFullYear()+" às "+p(d.getHours())+":"+p(d.getMinutes());render();})
+  .catch(()=>{});
+// Ícones (traço, estilo Lucide) e cor de cada card
+const ICON_PATHS={
+  briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>',
+  sparkles:'<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+  home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+  chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>',
+  send:'<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/>',
+  calendar:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 15l2 2 4-4"/>',
+  building:'<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1"/><path d="M10 21v-3h4v3"/>',
+  award:'<circle cx="12" cy="9" r="6"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/>',
+  check:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+};
+const KPI_STYLE={
+  "Vagas abertas":["briefcase","accent"],"Novas desde sua última visita":["sparkles","warn"],"Remotas":["home","info"],
+  "Sem holandês obrigatório":["chat","ok"],"Candidaturas feitas":["send","info"],"Entrevistas":["calendar","ok"],
+  "Empresas mapeadas":["building","accent"],"Parceiros oficiais":["award","warn"],"Com página de carreiras":["link","info"],
+  "Aceitam CV espontâneo":["file","ok"],"CV cadastrado":["check","ok"],"Falta cadastrar":["clock","warn"]
+};
+const kpiCard=([l,v])=>{const [ic,tone]=KPI_STYLE[l]||["briefcase","accent"];
+  return `<div class="kpi"><span class="ic tone-${tone}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[ic]}</svg></span><div><b>${v}</b><small>${l}</small></div></div>`};
 const fmtDate=d=>d?String(d).split("-").reverse().join("-"):"";
 const isNew=j=>j.firstSeen&&(LAST_VISIT?j.firstSeen>=LAST_VISIT:((Date.now()-new Date(j.firstSeen))/864e5<=3));
 const LIVE={
@@ -249,7 +284,7 @@ function allJobs(){
 }
 function renderJobs(){
   const keys=country==="ALL"?["IT","PT","NL"]:[country];
-  document.getElementById("updated").textContent=window.JOBS_UPDATED?("Lista de vagas atualizada automaticamente em "+fmtDate(window.JOBS_UPDATED)):"";
+  document.getElementById("updated").textContent=LAST_SYNC?("Lista de vagas sincronizada em "+LAST_SYNC):window.JOBS_UPDATED?("Lista de vagas sincronizada em "+fmtDate(window.JOBS_UPDATED)):"";
   document.getElementById("liveLinks").innerHTML="<b>Conferir agora:</b>"+keys.map(k=>{
     const g=COUNTRIES[k].geo,f=keys.length>1?k+" ":"";
     return [[f+"LinkedIn · 24h",`https://www.linkedin.com/jobs/search/?keywords=OutSystems&geoId=${g}&f_TPR=r86400`],[f+"LinkedIn · 7 dias",`https://www.linkedin.com/jobs/search/?keywords=OutSystems&geoId=${g}&f_TPR=r604800`]]
@@ -278,7 +313,7 @@ function renderJobs(){
     ["Vagas abertas",open.length],["Novas desde sua última visita",open.filter(isNew).length],["Remotas",open.filter(j=>j.workMode==="remoto").length],
     ["Sem holandês obrigatório",open.filter(j=>!/holand/i.test(j.language||"")).length],
     ["Candidaturas feitas",list.length-a("Não candidatei")-a("Não tenho interesse")],["Entrevistas",a("Entrevista")+a("Proposta")]
-  ].map(([l,v])=>`<div class="kpi"><b>${v}</b><small>${l}</small></div>`).join("");
+  ].map(kpiCard).join("");
 }
 document.getElementById("jfCand").innerHTML+=APP_STATUSES.map(s=>`<option>${s}</option>`).join("");
 ["jq","jfSit","jfModo","jfNivel","jfCand","jfNoDutch"].forEach(id=>document.getElementById(id).addEventListener("input",render));
