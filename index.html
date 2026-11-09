@@ -232,6 +232,7 @@ const SIT_LABEL={aberta:"Aberta",fechada:"Fechada",desconhecido:"Verificar"};
 state.jobEdits=state.jobEdits||{}; state.jobsAdded=state.jobsAdded||[]; state.jobsRemoved=state.jobsRemoved||[];
 let jSortKey="posted",jSortDir=-1;
 const LAST_VISIT=(()=>{try{const v=localStorage.getItem(KEY+"-lastVisit");localStorage.setItem(KEY+"-lastVisit",new Date().toISOString().slice(0,10));return v||""}catch(e){return""}})();
+const fmtDate=d=>d?String(d).split("-").reverse().join("-"):"";
 const isNew=j=>j.firstSeen&&(LAST_VISIT?j.firstSeen>=LAST_VISIT:((Date.now()-new Date(j.firstSeen))/864e5<=3));
 const LIVE={
   IT:[["Indeed IT · 7 dias","https://it.indeed.com/jobs?q=OutSystems&l=Italia&fromage=7"],["Glassdoor IT","https://www.glassdoor.it/Lavoro/outsystems-lavori-SRCH_KO0,10.htm"],["Talent.com IT","https://it.talent.com/jobs?k=outsystems&l=Italia"],["Google Jobs","https://www.google.com/search?q=OutSystems+developer+lavoro+Italia&ibp=htl;jobs"]],
@@ -245,7 +246,7 @@ function allJobs(){
 }
 function renderJobs(){
   const keys=country==="ALL"?["IT","PT","NL"]:[country];
-  document.getElementById("updated").textContent=window.JOBS_UPDATED?("Lista de vagas atualizada automaticamente em "+window.JOBS_UPDATED.split("-").reverse().join("/")):"";
+  document.getElementById("updated").textContent=window.JOBS_UPDATED?("Lista de vagas atualizada automaticamente em "+fmtDate(window.JOBS_UPDATED)):"";
   document.getElementById("liveLinks").innerHTML="<b>Conferir agora:</b>"+keys.map(k=>{
     const g=COUNTRIES[k].geo,f=keys.length>1?k+" ":"";
     return [[f+"LinkedIn · 24h",`https://www.linkedin.com/jobs/search/?keywords=OutSystems&geoId=${g}&f_TPR=r86400`],[f+"LinkedIn · 7 dias",`https://www.linkedin.com/jobs/search/?keywords=OutSystems&geoId=${g}&f_TPR=r604800`]]
@@ -261,7 +262,7 @@ function renderJobs(){
     <td><div class="name">${isNew(j)?'<span class="pill new">NOVA</span> ':""}${esc(j.title)}</div><div>${esc(j.company)}</div>${j.salary?`<div class="ev">💶 ${esc(j.salary)}</div>`:""}${j.info?`<div class="ev">${esc(j.info)}</div>`:""}</td>
     <td>${keys.length>1?cc(j.country):""}${esc(j.city)}${j.workMode?`<div class="ev">${esc(j.workMode)}</div>`:""}</td>
     <td>${LEVEL_LABEL[j.seniority]||""}</td>
-    <td style="white-space:nowrap">${esc(j.posted)}</td>
+    <td style="white-space:nowrap">${esc(fmtDate(j.posted))}</td>
     <td class="tags">${j.language?`<div>🗣 ${esc(j.language)}</div>`:""}${j.visa?`<div>🛂 ${esc(j.visa)}</div>`:""}</td>
     <td><span class="pill s-${j.status}">${SIT_LABEL[j.status]||esc(j.status)}</span></td>
     <td class="links"><a href="${esc(j.url)}" target="_blank" rel="noopener"><b>Abrir ↗</b></a>${j.source?`<div class="ev">${esc(j.source)}</div>`:""}</td>
