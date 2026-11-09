@@ -2,7 +2,7 @@
 // status: "aberta" | "fechada" | "desconhecido"
 // firstSeen: data (AAAA-MM-DD) em que a vaga entrou na lista → a página marca como NOVA.
 // info: observações da busca. Candidaturas e notas da usuária ficam salvas no navegador.
-window.JOBS_UPDATED = "2026-11-08";
+window.JOBS_UPDATED = "2026-11-09";
 window.SEED_JOBS = [
 // ---------- PORTUGAL ----------
 {"title":"Senior OutSystems Developer","company":"Neotalent Conclusion","country":"PT","city":"Lisboa","workMode":"híbrido","seniority":"senior","posted":"2026-10-21","status":"aberta","url":"https://www.linkedin.com/jobs/view/4482123183/","source":"LinkedIn / OutSystems Community","language":"","visa":"","salary":"","info":"5+ anos. Cliente do setor de seguros.","firstSeen":"2026-11-08"},
