@@ -44,7 +44,8 @@ const COMPANIES = [
 {"name":"GuestWorld","city":"Lisboa","type":"vaga","confidence":"alta","website":"","careersUrl":"","spontaneousCv":"desconhecido","linkedinUrl":"","evidence":"Tech Lead com stack OutSystems/.NET em Lisboa (4/nov/2026).","evidenceUrl":"https://www.linkedin.com/jobs/view/4486333270/"},
 {"name":"Virthio","city":"Lisboa","type":"vaga","confidence":"alta","website":"","careersUrl":"","spontaneousCv":"desconhecido","linkedinUrl":"","evidence":"OutSystems Developer em Lisboa, híbrido (5/nov/2026).","evidenceUrl":"https://www.outsystems.com/community/jobs/29192/"},
 {"name":"CONKORD (ex-RIT Group)","city":"Lisboa","type":"vaga","confidence":"alta","website":"","careersUrl":"","spontaneousCv":"desconhecido","linkedinUrl":"","evidence":"OutSystems Developer em Lisboa (republicada em 5/nov/2026).","evidenceUrl":"https://www.outsystems.com/community/jobs/29196/"},
-{"name":"Jerónimo Martins","city":"Lisboa","type":"vaga","confidence":"alta","website":"","careersUrl":"","spontaneousCv":"desconhecido","linkedinUrl":"","evidence":"Vaga interna OutSystems Engineering Manager em Lisboa (6/nov/2026).","evidenceUrl":"https://www.outsystems.com/community/jobs/29202/"}
+{"name":"Jerónimo Martins","city":"Lisboa","type":"vaga","confidence":"alta","website":"","careersUrl":"","spontaneousCv":"desconhecido","linkedinUrl":"","evidence":"Vaga interna OutSystems Engineering Manager em Lisboa (6/nov/2026).","evidenceUrl":"https://www.outsystems.com/community/jobs/29202/"},
+{"name":"Foursys (Foursys Europe)","city":"Lisboa","type":"vaga","confidence":"alta","website":"","careersUrl":"","spontaneousCv":"desconhecido","linkedinUrl":"","evidence":"Vaga OutSystems Developer em Lisboa, híbrida (nov/2026), 4+ anos.","evidenceUrl":"https://www.outsystems.com/community/jobs/29334/"},
 ];
 COMPANIES.forEach(c => { c.country = "PT"; });
 (window.SEED_COMPANIES = window.SEED_COMPANIES || []).push(...COMPANIES);
